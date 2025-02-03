@@ -1,6 +1,7 @@
 ﻿using System.Security.Cryptography.X509Certificates;
-
+using Serilog;
 namespace CalculatorApp;
+
 
 class Program
 {
@@ -9,7 +10,10 @@ class Program
        
         double num1 = 0;
         double num2 = 0;
-        
+        Log.Logger = new LoggerConfiguration()
+        .WriteTo.Console()
+        .CreateLogger();
+
         try
         {
             Console.WriteLine("Enter the first number:");
@@ -23,8 +27,8 @@ class Program
             string operation = Console.ReadLine()?.ToLower() ?? string.Empty;
             if (operation != "add" && operation != "subtract" && operation != "multiply" && operation != "divide")
             {
-                Console.WriteLine("An error occurred: The specified operation is not supported.");
-                Console.WriteLine("Calculation attempt finished.");
+                Console.WriteLine("An error occurred: The specified operation is not supported.\nCalculation attempt finished.");
+                Log.Error("An error occurred: The specified operation is not supported.");
                 throw new InvalidOperationException("An error occurred: The specified operation is not supported.");
             }
 
@@ -36,12 +40,14 @@ class Program
         }
         catch (FormatException)
         {
-            Console.WriteLine("Invalid input. Please enter numeric values.");
-            Console.WriteLine("Calculation attempt finished.");
+            Log.Error("Invalid input. Please enter numeric values.\nCalculation attempt finished.");
+            Console.WriteLine("Invalid input. Please enter numeric values.\nCalculation attempt finished.");
 
         }
 
+    Log.CloseAndFlush();
             
     
     }
+ 
 }
